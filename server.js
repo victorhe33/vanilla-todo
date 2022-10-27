@@ -26,18 +26,29 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 
 //ROUTES
 //CREATE
-app.post('/task', (req, res) => {
+app.post('/task', async (req, res) => {
+  console.log('inside post /task');
+  console.log('req.body', req.body)
   const { name } = req.body;
   const newTask = new Task({ name: name });
-  newTask.save(function (err) {
+  await newTask.save(function (err) {
     if (err) return res.status(404).json({message: "failed to save newTask"})
     // saved!
   });
-  
-  res.status(200).json(newTask)
+  res.status(200).json(newTask);
 })
 
 //READ
+//create all
+app.get('/task', async (req, res) => {
+  console.log('inside get /task');
+  try {
+    const allTasks = await Task.find({});
+    return res.status(200).json(allTasks);
+  } catch (error) {
+    return console.log(error);
+  }
+})
 
 //UPDATE
 
