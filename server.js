@@ -39,7 +39,6 @@ app.post('/task', async (req, res) => {
 })
 
 //READ
-//create all
 app.get('/task', async (req, res) => {
   console.log('inside get /task');
   try {
@@ -51,8 +50,32 @@ app.get('/task', async (req, res) => {
 })
 
 //UPDATE
+app.patch('/task', async (req, res) => {
+  console.log('inside patch /task');
+  try {
+    const { _id, name } = req.body;
+    const updatedTask = await Task.findByIdAndUpdate(_id, {
+      name: name
+    });
+    console.log('updatedTask', updatedTask);
+    return res.status(200).json(updatedTask);
+  } catch (error) {
+    return console.log(error);
+  }
+})
 
 //DELETE
+app.delete('/task', async (req, res) => {
+  console.log('inside delete /task');
+  try {
+    const { _id } = req.body;
+    const deletedTask = await Task.findByIdAndDelete(_id);
+    console.log('deletedTask', deletedTask);
+    return res.status(200).json(deletedTask);
+  } catch (error) {
+    return console.log(error);
+  }
+})
 
 //UNKNOWN ROUTE HANDLER
 app.use((req, res) => {

@@ -18,6 +18,8 @@ async function createTask () {
     })
     const data = await response.json();
     console.log(data);
+    //render tasks
+    // readTask(); 
   } catch (error) {
     console.log(error);
   }
@@ -58,10 +60,12 @@ async function readTask () {
     div.append(updateInput);
     div.append(updateButton);
     div.append(deleteButton);
-
   })
 
-  //add to TaskElements Array
+  //clear app container in DOM
+  clearApp();
+
+  //add to TaskElements Array, add to app container in DOM;
   console.log('taskElements', taskElements)
   taskElements.forEach(taskElement => {
     app.append(taskElement);
@@ -69,22 +73,58 @@ async function readTask () {
 }
 
 //UPDATE
-function updateTask(e) {
+async function updateTask(e) {
   console.log('updateTask()', e.parentElement.id);
   const updateValue = document.querySelector(`#input${e.parentElement.id}`).value;
   console.log('update value', updateValue);
+  
   //update fetch functionality
+  const response = await fetch('/task', {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      _id: e.parentElement.id,
+      name: updateValue
+    })
+  });
+  const updatedTask = await response.json();
+  console.log('updatedTask', updatedTask);
+
+  //re-render
+  // readTask();
 }
 
 //DELETE
-function deleteTask (e) {
+async function deleteTask (e) {
   console.log('deleteTask()', e.parentElement.id);
+
   //delete fetch functionality
+  const response = await fetch('/task', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      _id: e.parentElement.id,
+    })
+  });
+  const deletedTask = await response.json();
+  console.log('deletedTask', deletedTask);
+
+  //re-render
+  // readTask();
 }
 
-function onLoad() {
-  readTask(); 
+//CLEAR APP CONTAINER IN DOM
+function clearApp() {
+  while (app.firstChild) {
+    app.removeChild(app.firstChild);
+  }
 }
 
-//Start page functionality
-// onLoad();
+//On page load, read Tasks. IIFE
+(function onLoad() {
+  // readTask();
+})();
